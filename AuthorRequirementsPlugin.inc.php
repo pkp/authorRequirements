@@ -35,13 +35,12 @@ class AuthorRequirementsPlugin extends GenericPlugin {
      * @copydoc Plugin::register()
      */
     public function register($category, $path, $mainContextId = NULL) {
-        
 
         // Register the plugin even when it is not enabled
         $success = parent::register($category, $path);
 
         if ($success && $this->getEnabled()) {
-            
+
             $contextId = $this->getCurrentContextId();
 
             // Deals with making email optional
@@ -81,7 +80,7 @@ class AuthorRequirementsPlugin extends GenericPlugin {
         }
 
         // Remove email check from check list
-        $checks = &$form->_checks;
+        $checks =& $form->_checks;
         foreach ($checks as $k => $check) {
             if (is_a($check, 'FormValidatorEmail')) {
                 unset($checks[$k]);
@@ -91,7 +90,7 @@ class AuthorRequirementsPlugin extends GenericPlugin {
         }
 
         // Remove css validator element
-        $cssValidation = &$form->cssValidation;
+        $cssValidation =& $form->cssValidation;
         unset($cssValidation['email']);
 
         // Add optional email form validation back in
@@ -100,26 +99,26 @@ class AuthorRequirementsPlugin extends GenericPlugin {
     }
 
     /**
-	 * @copydoc Plugin::getActions()
-	 */
-	public function getActions($request, $verb) {
-		$router = $request->getRouter();
-		import('lib.pkp.classes.linkAction.request.AjaxModal');
-		return array_merge(
-			$this->getEnabled()?array(
-				new LinkAction(
-					'settings',
-					new AjaxModal(
-						$router->url($request, null, null, 'manage', null, array('verb' => 'settings', 'plugin' => $this->getName(), 'category' => 'generic')),
-						$this->getDisplayName()
-					),
-					__('manager.plugins.settings'),
-					null
-				),
-			):array(),
-			parent::getActions($request, $verb)
-		);
-	}
+     * @copydoc Plugin::getActions()
+     */
+    public function getActions($request, $verb) {
+        $router = $request->getRouter();
+        import('lib.pkp.classes.linkAction.request.AjaxModal');
+        return array_merge(
+            $this->getEnabled() ? array(
+                new LinkAction(
+                    'settings',
+                    new AjaxModal(
+                        $router->url($request, null, null, 'manage', null, array('verb' => 'settings', 'plugin' => $this->getName(), 'category' => 'generic')),
+                        $this->getDisplayName()
+                    ),
+                    __('manager.plugins.settings'),
+                    null
+                ),
+            ) : array(),
+            parent::getActions($request, $verb)
+        );
+    }
 
     /**
      * @copydoc Plugin::manage()
@@ -127,9 +126,9 @@ class AuthorRequirementsPlugin extends GenericPlugin {
     public function manage($args, $request) {
         switch ($request->getUserVar('verb')) {
 
-            // Return a JSON response containing the 
-            // settings form
-            case 'settings':
+        // Return a JSON response containing the
+        // settings form
+        case 'settings':
             $this->import('AuthorRequirementsSettingsForm');
             $form = new AuthorRequirementsSettingsForm($this, $request->getContext()->getId());
 
