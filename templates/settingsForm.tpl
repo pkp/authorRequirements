@@ -13,10 +13,10 @@
 <h3>{translate key="plugins.generic.authorRequirements.settings.title"}</h3>
 
 <script>
-	$(function() {ldelim}
-		// Attach the form handler.
-		$('#authorRequirementsSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
-	{rdelim});
+    $(function() {ldelim}
+        // Attach the form handler.
+        $('#authorRequirementsSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
+    {rdelim});
 </script>
 
 <form class="pkp_form" id="authorRequirementsSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true}">
@@ -28,6 +28,6 @@
     {/fbvFormSection}
 {/fbvFormArea}
 
-{fbvFormButtons id="authorRequrementsSettingsFormSubmit" submitText="common.save"}
+{fbvFormButtons id="authorRequirementsSettingsFormSubmit" submitText="common.save"}
 </form>
 </div>

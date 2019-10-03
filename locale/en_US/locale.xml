@@ -12,10 +12,10 @@
   -->
 
 <locale name="en_US" full_name="U.S. English">
-	<message key="plugins.generic.authorRequirements.displayName">Author Requirements</message>
-	<message key="plugins.generic.authorRequirements.description">This plugin allows author name and email fields to be made optional.</message>
+  <message key="plugins.generic.authorRequirements.displayName">Author Requirements</message>
+  <message key="plugins.generic.authorRequirements.description">This plugin allows author name and email fields to be made optional.</message>
 
-	<message key="plugins.generic.authorRequirements.settings.title">Optional fields</message>
-	<message key="plugins.generic.authorRequirements.settings.description">Author fields to be made optional</message>
-	<message key="plugins.generic.authorRequirements.settings.emailOptional">Author email</message>
+  <message key="plugins.generic.authorRequirements.settings.title">Optional fields</message>
+  <message key="plugins.generic.authorRequirements.settings.description">Author fields to be made optional</message>
+  <message key="plugins.generic.authorRequirements.settings.emailOptional">Author email</message>
 </locale>
