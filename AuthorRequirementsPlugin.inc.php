@@ -48,6 +48,7 @@ class AuthorRequirementsPlugin extends GenericPlugin {
                 HookRegistry::register('TemplateResource::getFilename', array($this, '_overridePluginTemplates'));
                 HookRegistry::register('TemplateManager::fetch', array(&$this, 'overrideFormDisplay'));
                 HookRegistry::register('TemplateManager::fetch', array(&$this, 'overrideFormCreation'));
+                HookRegistry::register('authorform::readuservars', array(&$this, 'overrideFormValidation'));
             }
         }
         return $success;
@@ -75,6 +76,21 @@ class AuthorRequirementsPlugin extends GenericPlugin {
         $templateMgr = $args[0];
         $form = $templateMgr->getFBV()->getForm();
 
+        $this->emailOverride($form);
+    }
+
+    /**
+     * Overrides form validation for optional elements.
+     */
+    public function overrideFormValidation($hookname, $args) {
+        $form = $args[0];
+        $this->emailOverride($form);
+    }
+
+    /**
+     * Overrides the email requirement for authors during form creation and validation.
+     */
+    public function emailOverride($form) {
         if (!is_a($form, 'AuthorForm')) {
             return;
         }
@@ -95,7 +111,6 @@ class AuthorRequirementsPlugin extends GenericPlugin {
 
         // Add optional email form validation back in
         $form->addCheck(new FormValidatorEmail($form, 'email', 'optional'));
-
     }
 
     /**
