@@ -3,7 +3,7 @@
 This plugin allows certain author fields to be made optional.
 
 ## Requirements
-* OJS 3.1.2.x or OMP 3.1.2.x
+* OJS/OMP 3.2.0 or higher
 * PHP 5.3 or later
 
 ## Installation
@@ -22,4 +22,4 @@ The plugin makes it possible to add an author to a list of contributors without 
 
 Written by Erik Hanson for the [Public Knowledge Project](https://pkp.sfu.ca). Copyright (c) Simon Fraser University. Copyright (c) John Willinsky
 
-Distributed under the GNU GPL v2.
+Distributed under the GNU GPL v3.
