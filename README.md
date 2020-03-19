@@ -8,7 +8,7 @@ This plugin allows certain author fields to be made optional.
 
 ## Installation
 
-Install this as a "generic" plugin in OJS or OMP. The preferred installation method is through the Plugin Gallery. To install manually via the filesystem, extract the contents of this archive to a "authorRequirements" directory under "plugins/generic" in your OJS or OMP root.
+Install this as a "generic" plugin in OJS or OMP. The preferred installation method is through the Plugin Gallery. To install manually via the filesystem, extract the contents of this archive to a `authorRequirements` directory under `plugins/generic` in your OJS or OMP root.
 
 ## Configuration
 
@@ -16,7 +16,7 @@ The plugin allows certain author fields that are normally required to be optiona
 
 ## Usage
 
-The plugin makes it possible to add an author to a list of contributors without using certain requried fields (e.g. email). This is useful in cases where required information does not exist for authors.
+The plugin makes it possible to add an author to a list of contributors without using certain required fields (e.g. email). This is useful in cases where required information does not exist for authors.
 
 ## Author / License
 
