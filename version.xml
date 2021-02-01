@@ -3,8 +3,8 @@
 <!--
   * plugins/generic/authorRequirements/version.xml
   *
-  * Copyright (c) 2014-2020 Simon Fraser University
-  * Copyright (c) 2003-2020 John Willinsky
+  * Copyright (c) 2014-2021 Simon Fraser University
+  * Copyright (c) 2003-2021 John Willinsky
   * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * Plugin version information.
@@ -13,8 +13,8 @@
 <version>
     <application>authorRequirements</application>
     <type>plugins.generic</type>
-    <release>1.0.0.1</release>
-    <date>2020-02-26</date>
+    <release>1.0.1.0</release>
+    <date>2021-02-01</date>
     <lazy-load>1</lazy-load>
     <class>AuthorRequirementsPlugin</class>
 </version>

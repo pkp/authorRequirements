@@ -12,7 +12,7 @@ Install this as a "generic" plugin in OJS or OMP. The preferred installation met
 
 ## Configuration
 
-The plugin allows certain author fields that are normally required to be optional. Optional fields may be selected on the plugin settings page. Currently author emails are the only field that can be made optional using this plugin. Others may be added in the future. 
+The plugin allows certain author fields that are normally required to be optional. Optional fields may be selected on the plugin settings page. Currently, author emails are the only field that can be made optional using this plugin. Others may be added in the future.
 
 ## Usage
 

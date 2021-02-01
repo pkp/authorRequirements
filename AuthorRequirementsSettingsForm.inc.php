@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/authorRequirements/AuthorRequirementsSettingsForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AuthorRequirementsSettingsForm
@@ -43,7 +43,7 @@ class AuthorRequirementsSettingsForm extends Form {
     public function initData() {
         $contextId = $this->_contextId;
         $plugin = $this->_plugin;
-        
+
         $this->setData('emailOptional', $plugin->getSetting($contextId, 'emailOptional'));
         parent::initData();
     }
@@ -73,8 +73,8 @@ class AuthorRequirementsSettingsForm extends Form {
     public function execute() {
         $plugin = $this->_plugin;
         $contextId = $this->_contextId;
-        
+
         $plugin->updateSetting($contextId, 'emailOptional', $this->getData('emailOptional'), 'bool');
         return parent::execute();
-    }  
+    }
 }
