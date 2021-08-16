@@ -17,6 +17,16 @@
     {rdelim});
 </script>
 
+{*
+	Used in OMP.
+	Submission data `workType` does not exist in OJS so check will be false and not add any additional checkboxes.
+*}
+{if $submission->getData('workType') === $smarty.const.WORK_TYPE_EDITED_VOLUME}
+    {capture assign="additionalCheckboxes"}
+        {fbvElement type="checkbox" label="author.isVolumeEditor" id="isVolumeEditor" checked=$isVolumeEditor}
+    {/capture}
+{/if}
+
 <form class="pkp_form" id="editAuthor" method="post" action="{url op="updateAuthor" authorId=$authorId}">
     {csrf}
     {include file="controllers/notification/inPlaceNotification.tpl" notificationId="authorFormNotification"}
