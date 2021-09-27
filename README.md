@@ -8,7 +8,7 @@ This plugin allows certain author fields to be made optional.
 
 ## Installation
 
-Install this as a "generic" plugin in OJS or OMP. The preferred installation method is through the Plugin Gallery. To install manually via the filesystem, extract the contents of this archive to a `authorRequirements` directory under `plugins/generic` in your OJS or OMP root.
+Install this as a "generic" plugin in OJS or OMP. The preferred installation method is through the Plugin Gallery. To install manually via the filesystem, extract the contents of this archive to an `authorRequirements` directory under `plugins/generic` in your OJS or OMP root.
 
 ## Configuration
 
