@@ -21,7 +21,7 @@
 	Used in OMP.
 	Submission data `workType` does not exist in OJS so check will be false and not add any additional checkboxes.
 *}
-{if $submission->getData('workType') === $smarty.const.WORK_TYPE_EDITED_VOLUME}
+{if ($submission != null && $smarty.const.WORK_TYPE_EDITED_VOLUME != null) && $submission->getData('workType') === $smarty.const.WORK_TYPE_EDITED_VOLUME}
     {capture assign="additionalCheckboxes"}
         {fbvElement type="checkbox" label="author.isVolumeEditor" id="isVolumeEditor" checked=$isVolumeEditor}
     {/capture}
