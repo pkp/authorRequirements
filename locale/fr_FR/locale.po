@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: Martin Brändle\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-02-25T14:44:57+01:00\n"
+"PO-Revision-Date: 2021-02-25T14:44:57+01:00\n"
+"Language: fr_FR\n"
+
+msgid "plugins.generic.authorRequirements.displayName"
+msgstr "Paramètres d'auteur QuickSubmit"
+
+msgid "plugins.generic.authorRequirements.description"
+msgstr "Ce plugin permet de rendre facultatifs le nom de l'auteur et les champs d'adresse électronique. Utilisé en connexion avec le plugin QuickSubmit"
+
+msgid "plugins.generic.authorRequirements.settings.title"
+msgstr "Champs facultatifs"
+
+msgid "plugins.generic.authorRequirements.settings.description"
+msgstr "Les champs relatifs à l'auteur qui doivent être rendus facultatifs"
+
+msgid "plugins.generic.authorRequirements.settings.emailOptional"
+msgstr "Courriel de l'auteur"
+
