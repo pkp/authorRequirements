@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: Martin Brändle\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-02-25T14:44:57+01:00\n"
+"PO-Revision-Date: 2021-02-25T14:44:57+01:00\n"
+"Language: de_DE\n"
+
+msgid "plugins.generic.authorRequirements.displayName"
+msgstr "QuickSubmit Autoreneinstellungen"
+
+msgid "plugins.generic.authorRequirements.description"
+msgstr "Mit diesem Plugin können die Felder für Autorenname und E-Mail optional gemacht werden. Verwendet in Verbindung mit dem QuickSubmit-Plugin."
+
+msgid "plugins.generic.authorRequirements.settings.title"
+msgstr "Optionale Felder"
+
+msgid "plugins.generic.authorRequirements.settings.description"
+msgstr "Optional zu machende Autorenfelder"
+
+msgid "plugins.generic.authorRequirements.settings.emailOptional"
+msgstr "E-mailadresse"

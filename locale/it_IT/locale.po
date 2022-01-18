@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: Martin Brändle\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-02-25T14:44:57+01:00\n"
+"PO-Revision-Date: 2021-02-25T14:44:57+01:00\n"
+"Language: it_IT\n"
+
+msgid "plugins.generic.authorRequirements.displayName"
+msgstr "Requisiti dell'autore di QuickSubmit"
+
+msgid "plugins.generic.authorRequirements.description"
+msgstr "Questo plugin permette di rendere opzionali i campi nome dell'autore e email. Usato in connessione con il plugin QuickSubmit."
+
+msgid "plugins.generic.authorRequirements.settings.title"
+msgstr "Campi opzionali"
+
+msgid "plugins.generic.authorRequirements.settings.description"
+msgstr "Campi autore da rendere opzionali"
+
+msgid "plugins.generic.authorRequirements.settings.emailOptional"
+msgstr "E-mail dell'autore"
