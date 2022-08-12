@@ -56,25 +56,27 @@ class AuthorRequirementsSettingsForm extends Form {
         parent::readInputData();
     }
 
-    /**
-     * Fetch the form.
-     * @copydoc Form::fetch()
-     */
-    public function fetch($request) {
-        $templateMgr = TemplateManager::getManager($request);
-        $templateMgr->assign('pluginName', $this->_plugin->getName());
+	/**
+	 * Fetch the form.
+	 * @copydoc Form::fetch()
+	 */
+	public function fetch($request, $template = null, $display = false)
+	{
+		$templateMgr = TemplateManager::getManager($request);
+		$templateMgr->assign('pluginName', $this->_plugin->getName());
 
-        return parent::fetch($request);
-    }
+		return parent::fetch($request);
+	}
 
-    /**
-     * Save settings.
-     */
-    public function execute() {
-        $plugin = $this->_plugin;
-        $contextId = $this->_contextId;
+	/**
+	 * Save settings.
+	 */
+	public function execute(...$functionArgs)
+	{
+		$plugin = $this->_plugin;
+		$contextId = $this->_contextId;
 
-        $plugin->updateSetting($contextId, 'emailOptional', $this->getData('emailOptional'), 'bool');
-        return parent::execute();
-    }
+		$plugin->updateSetting($contextId, 'emailOptional', $this->getData('emailOptional'), 'bool');
+		return parent::execute();
+	}
 }
