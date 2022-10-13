@@ -60,7 +60,8 @@ class AuthorRequirementsSettingsForm extends Form {
      * Fetch the form.
      * @copydoc Form::fetch()
      */
-    public function fetch($request) {
+    public function fetch($request, $template = null, $display = false)
+    {
         $templateMgr = TemplateManager::getManager($request);
         $templateMgr->assign('pluginName', $this->_plugin->getName());
 
@@ -70,7 +71,8 @@ class AuthorRequirementsSettingsForm extends Form {
     /**
      * Save settings.
      */
-    public function execute() {
+    public function execute(...$functionArgs)
+    {
         $plugin = $this->_plugin;
         $contextId = $this->_contextId;
 
