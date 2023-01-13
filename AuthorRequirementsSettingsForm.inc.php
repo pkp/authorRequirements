@@ -60,23 +60,21 @@ class AuthorRequirementsSettingsForm extends Form {
      * Fetch the form.
      * @copydoc Form::fetch()
      */
-    public function fetch($request, $template = null, $display = false)
-    {
+    public function fetch($request, $template = null, $display = false) {
         $templateMgr = TemplateManager::getManager($request);
         $templateMgr->assign('pluginName', $this->_plugin->getName());
 
-        return parent::fetch($request);
+        return parent::fetch($request, $template, $display);
     }
 
     /**
      * Save settings.
      */
-    public function execute(...$functionArgs)
-    {
+    public function execute(...$functionArgs) {
         $plugin = $this->_plugin;
         $contextId = $this->_contextId;
 
         $plugin->updateSetting($contextId, 'emailOptional', $this->getData('emailOptional'), 'bool');
-        return parent::execute();
+        return parent::execute(...$functionArgs);
     }
 }
