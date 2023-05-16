@@ -13,8 +13,8 @@
 <version>
     <application>authorRequirements</application>
     <type>plugins.generic</type>
-    <release>1.0.1.2</release>
-    <date>2021-09-27</date>
+    <release>2.0.0.0</release>
+    <date>2023-03-30</date>
     <lazy-load>1</lazy-load>
     <class>AuthorRequirementsPlugin</class>
 </version>

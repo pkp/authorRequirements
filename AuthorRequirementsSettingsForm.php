@@ -13,22 +13,24 @@
  * @brief Form for managers to modify Author Requirements plugin settings
  */
 
-import('lib.pkp.classes.form.Form');
+namespace APP\plugins\generic\authorRequirements;
 
-class AuthorRequirementsSettingsForm extends Form {
+use APP\template\TemplateManager;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use PKP\form\Form;
+use PKP\form\validation\FormValidatorCSRF;
+use PKP\form\validation\FormValidatorPost;
 
-    /** @var int Associated context ID */
-    private $_contextId;
+class AuthorRequirementsSettingsForm extends Form
+{
 
-    /** @var AuthorRequirementsPlugin Author requirements plugin */
-    private $_plugin;
+    private int $_contextId;
+    private AuthorRequirementsPlugin $_plugin;
 
-    /**
-     * Constructor
-     * @param $plugin AuthorRequirementsPlugin Author requirements plugin
-     * @param $contextId int Context ID
-     */
-    function __construct($plugin, $contextId) {
+    function __construct(AuthorRequirementsPlugin $plugin, int $contextId)
+    {
         $this->_contextId = $contextId;
         $this->_plugin = $plugin;
 
@@ -40,7 +42,8 @@ class AuthorRequirementsSettingsForm extends Form {
     /**
      * Initialize form data
      */
-    public function initData() {
+    public function initData()
+    {
         $contextId = $this->_contextId;
         $plugin = $this->_plugin;
 
@@ -51,7 +54,8 @@ class AuthorRequirementsSettingsForm extends Form {
     /**
      * Assign form data to user-submitted data
      */
-    public function readInputData() {
+    public function readInputData()
+    {
         $this->readUserVars(array('emailOptional'));
         parent::readInputData();
     }
@@ -60,7 +64,8 @@ class AuthorRequirementsSettingsForm extends Form {
      * Fetch the form.
      * @copydoc Form::fetch()
      */
-    public function fetch($request, $template = null, $display = false) {
+    public function fetch($request, $template = null, $display = false)
+    {
         $templateMgr = TemplateManager::getManager($request);
         $templateMgr->assign('pluginName', $this->_plugin->getName());
 
@@ -70,11 +75,27 @@ class AuthorRequirementsSettingsForm extends Form {
     /**
      * Save settings.
      */
-    public function execute(...$functionArgs) {
+    public function execute(...$functionArgs)
+    {
         $plugin = $this->_plugin;
         $contextId = $this->_contextId;
 
-        $plugin->updateSetting($contextId, 'emailOptional', $this->getData('emailOptional'), 'bool');
+        $isEmailOptional = $this->getData('emailOptional');
+
+        if ($isEmailOptional) {
+            Schema::table('authors', function (Blueprint $table) {
+                $table->string('email', 90)->nullable()->change();
+            });
+        } else {
+            DB::table('authors')
+                ->whereNull('email')
+                ->update(['email' => '']);
+            Schema::table('authors', function (Blueprint $table) {
+                $table->string('email', 90)->change();
+            });
+        }
+
+        $plugin->updateSetting($contextId, 'emailOptional', $isEmailOptional, 'bool');
         return parent::execute(...$functionArgs);
     }
 }
