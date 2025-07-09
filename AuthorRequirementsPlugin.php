@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/authorRequirements/AuthorRequirementsPlugin.php
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AuthorRequirementsPlugin
@@ -15,10 +15,14 @@
 
 namespace APP\plugins\generic\authorRequirements;
 
+use APP\controllers\grid\users\author\form\AuthorForm;
 use APP\notification\NotificationManager;
+use APP\template\TemplateManager;
 use PKP\components\forms\Field;
 use PKP\components\forms\publication\ContributorForm;
 use PKP\core\JSONMessage;
+use PKP\form\Form;
+use PKP\form\validation\FormValidatorEmail;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\plugins\GenericPlugin;
@@ -59,8 +63,15 @@ class AuthorRequirementsPlugin extends GenericPlugin
 
             // Deals with making email optional
             if ($this->getSetting($contextId, 'emailOptional')) {
+                // Component-based form
                 Hook::add('Form::config::before', [$this, 'modifyContributorForm']);
                 Hook::add('Schema::get::author', [$this, 'modifyAuthorSchema']);
+
+                // Legacy forms (for Quick Submit plugin)
+                Hook::add('TemplateResource::getFilename', [$this, '_overridePluginTemplates']);
+                Hook::add('TemplateManager::fetch', [$this, 'overrideFormDisplay']);
+                Hook::add('TemplateManager::fetch', [$this, 'overrideFormCreation']);
+                Hook::add('authorform::readuservars', [$this, 'overrideFormValidation']);
             }
         }
         return $success;
@@ -99,11 +110,88 @@ class AuthorRequirementsPlugin extends GenericPlugin
     }
 
     /**
+     * Overrides visual presentation for required author form elements.
+     */
+    public function overrideFormDisplay($hookname, $args): bool
+    {
+        /** @var TemplateManager $templateMgr */
+        $templateMgr = $args[0];
+        /** @var string $template */
+        $template = $args[1];
+
+        if ($template !== 'controllers/grid/users/author/form/authorForm.tpl') {
+            return Hook::CONTINUE;
+        }
+
+        $templateMgr->assign('emailNotRequired', true);
+
+        return Hook::CONTINUE;
+    }
+
+    /**
+     * Overrides form creation regarding required and optional author form elements.
+     */
+    public function overrideFormCreation($hookname, $args): bool
+    {
+
+        /** @var TemplateManager $templateMgr */
+        $templateMgr = $args[0];
+        $form = $templateMgr->getFBV()->getForm();
+
+        if ($form) {
+            $this->emailOverride($form);
+        }
+
+        return Hook::CONTINUE;
+    }
+
+    /**
+     * Overrides form validation for optional elements.
+     */
+    public function overrideFormValidation($hookname, $args): bool
+    {
+        /** @var Form $form */
+        $form = $args[0];
+        if ($form) {
+            $this->emailOverride($form);
+        }
+
+        return Hook::CONTINUE;
+    }
+
+    /**
+     * Overrides the email requirement for authors during form creation and validation.
+     */
+    public function emailOverride(Form $form): void
+    {
+        if (!($form instanceof AuthorForm)) {
+            return;
+        }
+
+        // Remove email check from check list
+        $checks =& $form->_checks;
+        foreach ($checks as $k => $check) {
+            if ($check instanceof FormValidatorEmail) {
+                unset($checks[$k]);
+                $checks = array_values($checks);
+                break;
+            }
+        }
+
+        // Remove css validator element
+        $cssValidation =& $form->cssValidation;
+        unset($cssValidation['email']);
+
+        // Add optional email form validation back in
+        $form->addCheck(new FormValidatorEmail($form, 'email', 'optional'));
+    }
+
+    /**
      * @copydoc Plugin::getActions()
      */
-    public function getActions($request, $verb)
+    public function getActions($request, $actionArgs)
     {
-        $actions = parent::getActions($request, $verb);
+        $actions = parent::getActions($request, $actionArgs);
         if (!$this->getEnabled()) {
             return $actions;
         }
