@@ -1,11 +1,12 @@
 {**
  * plugins/generic/authorRequirements/templates/controllers/grid/users/author/form/authorForm.tpl
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Submission Contributor grid form
+ * @deprecated 3.4
  *
  *}
 
@@ -14,53 +15,48 @@
         $('#editAuthor').pkpHandler(
             '$.pkp.controllers.form.AjaxFormHandler'
         );
-    {rdelim});
+        {rdelim});
 </script>
-
-{*
-	Used in OMP.
-	Submission data `workType` does not exist in OJS so check will be false and not add any additional checkboxes.
-*}
-{if ($submission != null && $smarty.const.WORK_TYPE_EDITED_VOLUME != null) && $submission->getData('workType') === $smarty.const.WORK_TYPE_EDITED_VOLUME}
-    {capture assign="additionalCheckboxes"}
-        {fbvElement type="checkbox" label="author.isVolumeEditor" id="isVolumeEditor" checked=$isVolumeEditor}
-    {/capture}
-{/if}
 
 <form class="pkp_form" id="editAuthor" method="post" action="{url op="updateAuthor" authorId=$authorId}">
     {csrf}
     {include file="controllers/notification/inPlaceNotification.tpl" notificationId="authorFormNotification"}
 
     {include
-        file="common/userDetails.tpl"
-        disableUserNameSection=true
-        disableAuthSourceSection=true
-        disablePasswordSection=true
-        disableSendNotifySection=true
-        disableSalutationSection=true
-        disableInitialsSection=true
-        disablePhoneSection=true
-        disableLocaleSection=true
-        disableInterestsSection=true
-        disableMailingSection=true
-        disableSignatureSection=true
-        extraContentSectionUnfolded=true
-        countryRequired=true
-        emailNotRequired=$emailNotRequired
+    file="common/userDetails.tpl"
+    disableUserNameSection=true
+    disableAuthSourceSection=true
+    disablePasswordSection=true
+    disableSendNotifySection=true
+    disableSalutationSection=true
+    disableInitialsSection=true
+    disablePhoneSection=true
+    disableLocaleSection=true
+    disableInterestsSection=true
+    disableMailingSection=true
+    disableSignatureSection=true
+    extraContentSectionUnfolded=true
+    countryRequired=true
+    emailNotRequired=$emailNotRequired
     }
 
     {fbvFormArea id="submissionSpecific"}
-        {fbvFormSection id="userGroupId" title="submission.submit.contributorRole" list=true required=true}
-            {iterate from=authorUserGroups item=userGroup}
-                {if $userGroupId == $userGroup->getId()}{assign var="checked" value=true}{else}{assign var="checked" value=false}{/if}
-                {fbvElement type="radio" id="userGroup"|concat:$userGroup->getId() name="userGroupId" value=$userGroup->getId() checked=$checked label=$userGroup->getLocalizedName() translate=false}
-            {/iterate}
+    {if $requireAuthorCompetingInterests}
+        {fbvFormSection title="author.competingInterests"}
+        {fbvElement id="competingInterests" type="textarea" multilingual=true rich=true label="author.competingInterests.description" value=$competingInterests}
         {/fbvFormSection}
-        {fbvFormSection list="true"}
-            {fbvElement type="checkbox" label="submission.submit.selectPrincipalContact" id="primaryContact" checked=$primaryContact}
-            {fbvElement type="checkbox" label="submission.submit.includeInBrowse" id="includeInBrowse" checked=$includeInBrowse}
-            {$additionalCheckboxes}
-        {/fbvFormSection}
+    {/if}
+    {fbvFormSection id="userGroupId" title="submission.submit.contributorRole" list=true required=true}
+    {foreach from=$authorUserGroups item=$userGroup}
+        {if $userGroupId == $userGroup->getId()}{assign var="checked" value=true}{else}{assign var="checked" value=false}{/if}
+        {fbvElement type="radio" id="userGroup"|concat:$userGroup->getId() name="userGroupId" value=$userGroup->getId() checked=$checked label=$userGroup->getLocalizedName() translate=false}
+    {/foreach}
+    {/fbvFormSection}
+    {fbvFormSection list="true"}
+    {fbvElement type="checkbox" label="submission.submit.selectPrincipalContact" id="primaryContact" checked=$primaryContact}
+    {fbvElement type="checkbox" label="submission.submit.includeInBrowse" id="includeInBrowse" checked=$includeInBrowse}
+    {$additionalCheckboxes}
+    {/fbvFormSection}
     {/fbvFormArea}
 
     {if $submissionId}
