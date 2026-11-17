@@ -14,6 +14,7 @@ msgstr ""
 msgid "plugins.generic.authorRequirements.displayName"
 msgstr "Requisiti dell'autore di QuickSubmit"
 
+#, fuzzy
 msgid "plugins.generic.authorRequirements.description"
 msgstr "Questo plugin permette di rendere opzionali i campi nome dell'autore e email. Usato in connessione con il plugin QuickSubmit."
 

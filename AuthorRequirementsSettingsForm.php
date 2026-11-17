@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @file plugins/generic/authorRequirements/AuthorRequirementsSettingsForm.inc.php
+ * @file plugins/generic/authorRequirements/AuthorRequirementsSettingsForm.php
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2026 Simon Fraser University
+ * Copyright (c) 2003-2026 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AuthorRequirementsSettingsForm
@@ -25,14 +25,13 @@ use PKP\form\validation\FormValidatorPost;
 
 class AuthorRequirementsSettingsForm extends Form
 {
+    private int $contextId;
+    private AuthorRequirementsPlugin $plugin;
 
-    private int $_contextId;
-    private AuthorRequirementsPlugin $_plugin;
-
-    function __construct(AuthorRequirementsPlugin $plugin, int $contextId)
+    public function __construct(AuthorRequirementsPlugin $plugin, int $contextId)
     {
-        $this->_contextId = $contextId;
-        $this->_plugin = $plugin;
+        $this->contextId = $contextId;
+        $this->plugin = $plugin;
 
         parent::__construct($plugin->getTemplateResource('settingsForm.tpl'));
         $this->addCheck(new FormValidatorPost($this));
@@ -44,8 +43,8 @@ class AuthorRequirementsSettingsForm extends Form
      */
     public function initData()
     {
-        $contextId = $this->_contextId;
-        $plugin = $this->_plugin;
+        $contextId = $this->contextId;
+        $plugin = $this->plugin;
 
         $this->setData('emailOptional', $plugin->getSetting($contextId, 'emailOptional'));
         parent::initData();
@@ -67,7 +66,7 @@ class AuthorRequirementsSettingsForm extends Form
     public function fetch($request, $template = null, $display = false)
     {
         $templateMgr = TemplateManager::getManager($request);
-        $templateMgr->assign('pluginName', $this->_plugin->getName());
+        $templateMgr->assign('pluginName', $this->plugin->getName());
 
         return parent::fetch($request, $template, $display);
     }
@@ -77,8 +76,8 @@ class AuthorRequirementsSettingsForm extends Form
      */
     public function execute(...$functionArgs)
     {
-        $plugin = $this->_plugin;
-        $contextId = $this->_contextId;
+        $plugin = $this->plugin;
+        $contextId = $this->contextId;
 
         $isEmailOptional = $this->getData('emailOptional');
 

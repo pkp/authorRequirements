@@ -15,7 +15,7 @@ msgid "plugins.generic.authorRequirements.displayName"
 msgstr "Author Requirements"
 
 msgid "plugins.generic.authorRequirements.description"
-msgstr "This plugin allows author name and email fields to be made optional."
+msgstr "This plugin allows the author email field to be made optional."
 
 msgid "plugins.generic.authorRequirements.settings.title"
 msgstr "Optional fields"

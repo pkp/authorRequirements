@@ -1,8 +1,8 @@
 {**
  * plugins/generic/authorRequirements/templates/common/userDetails.tpl
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2026 Simon Fraser University
+ * Copyright (c) 2003-2026 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Common user details form.
@@ -10,7 +10,6 @@
  * Parameters:
  *   $disableUserNameSection: Disable UserName section
  *   $disableEmailSection: Disable Email section
- *   $disableAuthSourceSection: Disable Auth section
  *   $disablePasswordSection: Disable Password section
  *   $disableSendNotifySection: Disable SendNotify section
  *   $disablePhoneSection: Disable Phone section
@@ -21,8 +20,9 @@
  *
  *   $countryRequired: Whether or not the country select is a required field
  *   $extraContentSectionUnfolded: Whether or not the extra content section is unfolded by default
+ *   $emailNotRequired: Whether or not email is a required field
  *
- *   $emailNotRequired: Whenter or not email is a required field
+ * @hook Common::UserDetails::AdditionalItems []
  *}
 
 {fbvFormArea id="userDetails"}
@@ -51,13 +51,7 @@
 
     {if !$disableEmailSection}
         {fbvFormSection title="about.contact"}
-            {fbvElement type="text" label="user.email" id="email" required=!$emailNotRequired value=$email maxlength="90" size=$fbvStyles.size.MEDIUM}
-        {/fbvFormSection}
-    {/if}
-
-    {if !$disableAuthSourceSection}
-        {fbvFormSection title="grid.user.authSource" for="authId"}
-            {fbvElement type="select" name="authId" id="authId" defaultLabel="" defaultValue="" from=$authSourceOptions translate="true" selected=$authId}
+            {fbvElement type="email" label="user.email" id="email" required=!$emailNotRequired value=$email maxlength="90" size=$fbvStyles.size.MEDIUM}
         {/fbvFormSection}
     {/if}
 
@@ -116,20 +110,19 @@
         {fbvFormSection}
             {fbvElement type="text" label="user.url" name="userUrl" id="userUrl" value=$userUrl maxlength="255" inline=true size=$fbvStyles.size.SMALL}
             {if !$disablePhoneSection}
-                {fbvElement type="text" label="user.phone" name="phone" id="phone" value=$phone maxlength="24" inline=true size=$fbvStyles.size.SMALL}
+                {fbvElement type="tel" label="user.phone" name="phone" id="phone" value=$phone maxlength="24" inline=true size=$fbvStyles.size.SMALL}
             {/if}
-            {fbvElement type="text" label="user.orcid" name="orcid" id="orcid" value=$orcid maxlength="37" inline=true size=$fbvStyles.size.SMALL}
         {/fbvFormSection}
 
         {if !$disableLocaleSection && count($availableLocales) > 1}
             {fbvFormSection title="user.workingLanguages" list=true}
                 {foreach from=$availableLocales key=localeKey item=localeName}
-                    {if $userLocales && in_array($localeKey, $userLocales)}
+                    {if $locales && in_array($localeKey, $locales)}
                         {assign var="checked" value=true}
                     {else}
                         {assign var="checked" value=false}
                     {/if}
-                    {fbvElement type="checkbox" name="userLocales[]" id="userLocales-$localeKey" value=$localeKey checked=$checked label=$localeName translate=false}
+                    {fbvElement type="checkbox" name="locales[]" id="locales-$localeKey" value=$localeKey checked=$checked label=$localeName|escape translate=false}
                 {/foreach}
             {/fbvFormSection}
         {/if}
