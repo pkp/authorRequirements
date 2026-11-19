@@ -1,8 +1,8 @@
 {**
  * plugins/generic/authorRequirements/templates/controllers/grid/users/author/form/authorForm.tpl
  *
- * Copyright (c) 2014-2025 Simon Fraser University
- * Copyright (c) 2003-2025 John Willinsky
+ * Copyright (c) 2014-2026 Simon Fraser University
+ * Copyright (c) 2003-2026 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Submission Contributor grid form
@@ -25,7 +25,6 @@
     {include
     file="common/userDetails.tpl"
     disableUserNameSection=true
-    disableAuthSourceSection=true
     disablePasswordSection=true
     disableSendNotifySection=true
     disableSalutationSection=true
@@ -48,8 +47,8 @@
     {/if}
     {fbvFormSection id="userGroupId" title="submission.submit.contributorRole" list=true required=true}
     {foreach from=$authorUserGroups item=$userGroup}
-        {if $userGroupId == $userGroup->getId()}{assign var="checked" value=true}{else}{assign var="checked" value=false}{/if}
-        {fbvElement type="radio" id="userGroup"|concat:$userGroup->getId() name="userGroupId" value=$userGroup->getId() checked=$checked label=$userGroup->getLocalizedName() translate=false}
+        {if $userGroupId == $userGroup->id}{assign var="checked" value=true}{else}{assign var="checked" value=false}{/if}
+        {fbvElement type="radio" id="userGroup"|concat:$userGroup->id name="userGroupId" value=$userGroup->id checked=$checked label=$userGroup->getLocalizedData('name') translate=false}
     {/foreach}
     {/fbvFormSection}
     {fbvFormSection list="true"}

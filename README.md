@@ -3,8 +3,8 @@
 This plugin allows certain author fields to be made optional.
 
 ## Requirements
-* OJS/OMP 3.4.0 or higher
-* PHP 8.0 or later
+* OJS/OMP 3.4.0 or 3.5.0
+* PHP 8.0 or later (8.2 or later for OJS/OMP 3.5.0)
 
 ## Installation
 

@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/authorRequirements/AuthorRequirementsPlugin.php
  *
- * Copyright (c) 2014-2025 Simon Fraser University
- * Copyright (c) 2003-2025 John Willinsky
+ * Copyright (c) 2014-2026 Simon Fraser University
+ * Copyright (c) 2003-2026 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AuthorRequirementsPlugin
@@ -18,6 +18,7 @@ namespace APP\plugins\generic\authorRequirements;
 use APP\controllers\grid\users\author\form\AuthorForm;
 use APP\notification\NotificationManager;
 use APP\template\TemplateManager;
+use Illuminate\Support\Facades\Event;
 use PKP\components\forms\Field;
 use PKP\components\forms\publication\ContributorForm;
 use PKP\core\JSONMessage;
@@ -25,6 +26,10 @@ use PKP\form\Form;
 use PKP\form\validation\FormValidatorEmail;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
+use PKP\mail\Mailable;
+use PKP\mail\variables\ContextEmailVariable;
+use PKP\notification\Notification;
+use PKP\observers\events\MessageSendingFromContext;
 use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
 
@@ -32,18 +37,16 @@ class AuthorRequirementsPlugin extends GenericPlugin
 {
     /**
      * Get the display name of this plugin
-     * @return string
      */
-    public function getDisplayName()
+    public function getDisplayName(): string
     {
         return __('plugins.generic.authorRequirements.displayName');
     }
 
     /**
      * Get the description of this plugin
-     * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return __('plugins.generic.authorRequirements.description');
     }
@@ -58,7 +61,6 @@ class AuthorRequirementsPlugin extends GenericPlugin
         $success = parent::register($category, $path);
 
         if ($success && $this->getEnabled()) {
-
             $contextId = $this->getCurrentContextId();
 
             // Deals with making email optional
@@ -74,6 +76,14 @@ class AuthorRequirementsPlugin extends GenericPlugin
                 Hook::add('authorform::readuservars', [$this, 'overrideFormValidation']);
             }
         }
+
+        // Emails to authors without an email address. These check the email's own
+        // context, because queued emails, such as ORCID verification requests, may be
+        // sent by a CLI worker or during a request for another context.
+        if ($success) {
+            Hook::add('Mailable::build', [$this, 'removeRecipientsWithoutEmail']);
+            Event::listen(MessageSendingFromContext::class, [$this, 'cancelMessageWithoutRecipients']);
+        }
         return $success;
     }
 
@@ -86,7 +96,7 @@ class AuthorRequirementsPlugin extends GenericPlugin
             return Hook::CONTINUE;
         }
 
-        $form->fields = array_map(function(Field $field) {
+        $form->fields = array_map(function (Field $field) {
             if ($field->name === 'email') {
                 $field->isRequired = false;
             }
@@ -95,6 +105,77 @@ class AuthorRequirementsPlugin extends GenericPlugin
         }, $form->fields);
 
         return Hook::CONTINUE;
+    }
+
+    /**
+     * Whether the plugin is enabled and author emails are optional in a context.
+     *
+     * Used for emails, which can be sent outside a request for their context, so the
+     * current context's settings may not apply.
+     */
+    protected function isEmailOptional(int $contextId): bool
+    {
+        return $this->getEnabled($contextId) && (bool) $this->getSetting($contextId, 'emailOptional');
+    }
+
+    /**
+     * Get the context of an email from its context variable, or null if the email
+     * is not sent from a context.
+     */
+    protected function getMailableContextId(Mailable $mailable): ?int
+    {
+        foreach ($mailable->getVariables() as $variable) {
+            if ($variable instanceof ContextEmailVariable) {
+                return $variable->getContextFromVariable()->getId();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Remove recipients without an email address from an email before it is built,
+     * so that emails sent to all of a submission's authors, such as the submission
+     * acknowledgement, skip authors who have no email address.
+     *
+     * Only applies to emails from a context where the plugin is enabled and author
+     * emails are optional.
+     *
+     * The hook passes the mailable as a named argument, so the parameter must be
+     * called $mailable.
+     */
+    public function removeRecipientsWithoutEmail(string $hookName, Mailable $mailable): bool
+    {
+        $contextId = $this->getMailableContextId($mailable);
+        if ($contextId === null || !$this->isEmailOptional($contextId)) {
+            return Hook::CONTINUE;
+        }
+
+        foreach (['to', 'cc', 'bcc'] as $type) {
+            $mailable->{$type} = array_values(
+                array_filter($mailable->{$type}, fn (array $recipient) => !empty($recipient['address']))
+            );
+        }
+
+        return Hook::CONTINUE;
+    }
+
+    /**
+     * Cancel sending an email that has no recipients left after the recipients
+     * without an email address were removed by removeRecipientsWithoutEmail().
+     *
+     * Only applies to emails from a context where the plugin is enabled and author
+     * emails are optional. Returning false stops the email from being sent.
+     * Returning null lets it send.
+     */
+    public function cancelMessageWithoutRecipients(MessageSendingFromContext $event): ?bool
+    {
+        $message = $event->message;
+
+        return $this->isEmailOptional($event->context->getId())
+            && empty($message->getTo()) && empty($message->getCc()) && empty($message->getBcc())
+            ? false
+            : null;
     }
 
     /**
@@ -230,7 +311,7 @@ class AuthorRequirementsPlugin extends GenericPlugin
             $notificationManager = new NotificationManager();
             $notificationManager->createTrivialNotification(
                 $request->getUser()->getId(),
-                \PKPNotification::NOTIFICATION_TYPE_ERROR,
+                Notification::NOTIFICATION_TYPE_ERROR,
                 ['contents' => __('common.error.databaseError', ['error' => $exception->getMessage()])],
             );
         }
