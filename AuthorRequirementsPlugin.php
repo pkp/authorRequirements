@@ -18,7 +18,6 @@ namespace APP\plugins\generic\authorRequirements;
 use APP\controllers\grid\users\author\form\AuthorForm;
 use APP\notification\NotificationManager;
 use APP\template\TemplateManager;
-use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Event;
 use PKP\components\forms\Field;
 use PKP\components\forms\publication\ContributorForm;
@@ -28,9 +27,9 @@ use PKP\form\validation\FormValidatorEmail;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\mail\Mailable;
+use PKP\mail\variables\ContextEmailVariable;
 use PKP\notification\Notification;
 use PKP\observers\events\MessageSendingFromContext;
-use PKP\observers\events\MessageSendingFromSite;
 use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
 
@@ -75,12 +74,15 @@ class AuthorRequirementsPlugin extends GenericPlugin
                 Hook::add('TemplateManager::fetch', [$this, 'overrideFormDisplay']);
                 Hook::add('TemplateManager::fetch', [$this, 'overrideFormCreation']);
                 Hook::add('authorform::readuservars', [$this, 'overrideFormValidation']);
-
-                // Emails to authors without an email address
-                Hook::add('Mailable::build', [$this, 'removeRecipientsWithoutEmail']);
-                Event::listen(MessageSendingFromContext::class, [$this, 'cancelMessageWithoutRecipients']);
-                Event::listen(MessageSendingFromSite::class, [$this, 'cancelMessageWithoutRecipients']);
             }
+        }
+
+        // Emails to authors without an email address. These check the email's own
+        // context, because queued emails, such as ORCID verification requests, may be
+        // sent by a CLI worker or during a request for another context.
+        if ($success) {
+            Hook::add('Mailable::build', [$this, 'removeRecipientsWithoutEmail']);
+            Event::listen(MessageSendingFromContext::class, [$this, 'cancelMessageWithoutRecipients']);
         }
         return $success;
     }
@@ -106,15 +108,49 @@ class AuthorRequirementsPlugin extends GenericPlugin
     }
 
     /**
+     * Whether the plugin is enabled and author emails are optional in a context.
+     *
+     * Used for emails, which can be sent outside a request for their context, so the
+     * current context's settings may not apply.
+     */
+    protected function isEmailOptional(int $contextId): bool
+    {
+        return $this->getEnabled($contextId) && (bool) $this->getSetting($contextId, 'emailOptional');
+    }
+
+    /**
+     * Get the context of an email from its context variable, or null if the email
+     * is not sent from a context.
+     */
+    protected function getMailableContextId(Mailable $mailable): ?int
+    {
+        foreach ($mailable->getVariables() as $variable) {
+            if ($variable instanceof ContextEmailVariable) {
+                return $variable->getContextFromVariable()->getId();
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Remove recipients without an email address from an email before it is built,
      * so that emails sent to all of a submission's authors, such as the submission
      * acknowledgement, skip authors who have no email address.
+     *
+     * Only applies to emails from a context where the plugin is enabled and author
+     * emails are optional.
      *
      * The hook passes the mailable as a named argument, so the parameter must be
      * called $mailable.
      */
     public function removeRecipientsWithoutEmail(string $hookName, Mailable $mailable): bool
     {
+        $contextId = $this->getMailableContextId($mailable);
+        if ($contextId === null || !$this->isEmailOptional($contextId)) {
+            return Hook::CONTINUE;
+        }
+
         foreach (['to', 'cc', 'bcc'] as $type) {
             $mailable->{$type} = array_values(
                 array_filter($mailable->{$type}, fn (array $recipient) => !empty($recipient['address']))
@@ -128,13 +164,16 @@ class AuthorRequirementsPlugin extends GenericPlugin
      * Cancel sending an email that has no recipients left after the recipients
      * without an email address were removed by removeRecipientsWithoutEmail().
      *
-     * Returning false stops the email from being sent. Returning null lets it send.
+     * Only applies to emails from a context where the plugin is enabled and author
+     * emails are optional. Returning false stops the email from being sent.
+     * Returning null lets it send.
      */
-    public function cancelMessageWithoutRecipients(MessageSending $event): ?bool
+    public function cancelMessageWithoutRecipients(MessageSendingFromContext $event): ?bool
     {
         $message = $event->message;
 
-        return empty($message->getTo()) && empty($message->getCc()) && empty($message->getBcc())
+        return $this->isEmailOptional($event->context->getId())
+            && empty($message->getTo()) && empty($message->getCc()) && empty($message->getBcc())
             ? false
             : null;
     }
