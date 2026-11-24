@@ -21,7 +21,9 @@ msgid "plugins.generic.authorRequirements.settings.title"
 msgstr "Optional fields"
 
 msgid "plugins.generic.authorRequirements.settings.description"
-msgstr "Author fields to be made optional"
+msgstr ""
+"Author fields to be made optional. Contributors without an email address are "
+"not sent any emails, including ORCID verification requests."
 
 msgid "plugins.generic.authorRequirements.settings.emailOptional"
 msgstr "Author email"
