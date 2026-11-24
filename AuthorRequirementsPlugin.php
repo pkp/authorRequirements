@@ -17,6 +17,7 @@ namespace APP\plugins\generic\authorRequirements;
 
 use APP\controllers\grid\users\author\form\AuthorForm;
 use APP\notification\NotificationManager;
+use APP\plugins\generic\authorRequirements\classes\migration\AuthorRequirementsSchemaMigration;
 use APP\template\TemplateManager;
 use Illuminate\Support\Facades\Event;
 use PKP\components\forms\Field;
@@ -73,6 +74,7 @@ class AuthorRequirementsPlugin extends GenericPlugin
                 Hook::add('TemplateResource::getFilename', [$this, '_overridePluginTemplates']);
                 Hook::add('TemplateManager::fetch', [$this, 'overrideFormDisplay']);
                 Hook::add('TemplateManager::fetch', [$this, 'overrideFormCreation']);
+                Hook::add('Common::UserDetails::AdditionalItems', [$this, 'addAuthorFormEmail']);
                 Hook::add('authorform::readuservars', [$this, 'overrideFormValidation']);
             }
         }
@@ -210,6 +212,26 @@ class AuthorRequirementsPlugin extends GenericPlugin
     }
 
     /**
+     * Add the email section to the author form.
+     *
+     * The plugin's copy of the author form disables the email section of
+     * common/userDetails.tpl and sets authorRequirementsEmailSection, so that this
+     * adds an optional email field to the author form only, not to the other forms
+     * that use common/userDetails.tpl.
+     */
+    public function addAuthorFormEmail(string $hookName, array $args): bool
+    {
+        $smarty = $args[1];
+        $output = &$args[2];
+
+        if ($smarty->getTemplateVars('authorRequirementsEmailSection')) {
+            $output .= $smarty->fetch($this->getTemplateResource('authorFormEmail.tpl'));
+        }
+
+        return Hook::CONTINUE;
+    }
+
+    /**
      * Overrides form creation regarding required and optional author form elements.
      */
     public function overrideFormCreation($hookname, $args): bool
@@ -265,6 +287,14 @@ class AuthorRequirementsPlugin extends GenericPlugin
 
         // Add optional email form validation back in
         $form->addCheck(new FormValidatorEmail($form, 'email', 'optional'));
+    }
+
+    /**
+     * @copydoc Plugin::getInstallMigration()
+     */
+    public function getInstallMigration(): AuthorRequirementsSchemaMigration
+    {
+        return new AuthorRequirementsSchemaMigration();
     }
 
     /**

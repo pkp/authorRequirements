@@ -15,10 +15,8 @@
 
 namespace APP\plugins\generic\authorRequirements;
 
+use APP\plugins\generic\authorRequirements\classes\migration\AuthorRequirementsSchemaMigration;
 use APP\template\TemplateManager;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use PKP\form\Form;
 use PKP\form\validation\FormValidatorCSRF;
 use PKP\form\validation\FormValidatorPost;
@@ -81,17 +79,9 @@ class AuthorRequirementsSettingsForm extends Form
 
         $isEmailOptional = $this->getData('emailOptional');
 
+        // Sites that upgraded the plugin may not have run the install migration yet
         if ($isEmailOptional) {
-            Schema::table('authors', function (Blueprint $table) {
-                $table->string('email', 90)->nullable()->change();
-            });
-        } else {
-            DB::table('authors')
-                ->whereNull('email')
-                ->update(['email' => '']);
-            Schema::table('authors', function (Blueprint $table) {
-                $table->string('email', 90)->change();
-            });
+            (new AuthorRequirementsSchemaMigration())->up();
         }
 
         $plugin->updateSetting($contextId, 'emailOptional', $isEmailOptional, 'bool');

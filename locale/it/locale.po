@@ -21,6 +21,7 @@ msgstr "Questo plugin permette di rendere opzionali i campi nome dell'autore e e
 msgid "plugins.generic.authorRequirements.settings.title"
 msgstr "Campi opzionali"
 
+#, fuzzy
 msgid "plugins.generic.authorRequirements.settings.description"
 msgstr "Campi autore da rendere opzionali"
 
