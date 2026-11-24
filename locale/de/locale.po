@@ -21,6 +21,7 @@ msgstr "Mit diesem Plugin können die Felder für Autorenname und E-Mail optiona
 msgid "plugins.generic.authorRequirements.settings.title"
 msgstr "Optionale Felder"
 
+#, fuzzy
 msgid "plugins.generic.authorRequirements.settings.description"
 msgstr "Optional zu machende Autorenfelder"
 

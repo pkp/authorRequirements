@@ -34,9 +34,10 @@
     disableInterestsSection=true
     disableMailingSection=true
     disableSignatureSection=true
+    disableEmailSection=true
+    authorRequirementsEmailSection=true
     extraContentSectionUnfolded=true
     countryRequired=true
-    emailNotRequired=$emailNotRequired
     }
 
     {fbvFormArea id="submissionSpecific"}

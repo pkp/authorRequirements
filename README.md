@@ -3,7 +3,7 @@
 This plugin allows certain author fields to be made optional.
 
 ## Requirements
-* OJS/OMP 3.4.0 or 3.5.0
+* OJS/OMP 3.4.0, or 3.5.0-4 or later
 * PHP 8.0 or later (8.2 or later for OJS/OMP 3.5.0)
 
 ## Installation
@@ -17,6 +17,12 @@ The plugin allows certain author fields that are normally required to be optiona
 ## Usage
 
 The plugin makes it possible to add an author to a list of contributors without using certain required fields (e.g. email). This is useful in cases where required information does not exist for authors.
+
+Contributors without an email address are not sent any emails. This includes ORCID verification requests: the request can be made, but no email is sent, so the contributor's ORCID cannot be verified. Emails that would go only to contributors without an email address are still recorded in the submission's email log.
+
+When exporting to JATS or native XML, contributors without an email address have an empty `<email>` element.
+
+Making author emails optional changes the database so that any author can be saved without an email address. This change applies to the whole site and is not reversed by turning the setting off or disabling the plugin. Turning the setting off makes the email required again in the forms of that journal or press only.
 
 ## Author / License
 

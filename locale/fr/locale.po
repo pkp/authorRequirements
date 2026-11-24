@@ -21,6 +21,7 @@ msgstr "Ce plugin permet de rendre facultatifs le nom de l'auteur et les champs 
 msgid "plugins.generic.authorRequirements.settings.title"
 msgstr "Champs facultatifs"
 
+#, fuzzy
 msgid "plugins.generic.authorRequirements.settings.description"
 msgstr "Les champs relatifs à l'auteur qui doivent être rendus facultatifs"
 
