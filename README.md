@@ -22,7 +22,7 @@ Contributors without an email address are not sent any emails. This includes ORC
 
 When exporting to JATS or native XML, contributors without an email address have an empty `<email>` element.
 
-Making author emails optional changes the database so that any author can be saved without an email address. This change applies to the whole site and is not reversed by turning the setting off or disabling the plugin. Turning the setting off makes the email required again in the forms of that journal or press only.
+Making author emails optional also changes the database so that it can store authors without an email address. This change applies to the whole site and is not reversed by turning the setting off or disabling the plugin. It does not make emails optional by itself: in a journal or press where the setting is off or the plugin is disabled, an email is still required when a contributor is added or edited.
 
 ## Author / License
 
